@@ -1,1 +1,1 @@
-echo "Hello, docker!"
+echo "Hello, docker {$PATH}!"
