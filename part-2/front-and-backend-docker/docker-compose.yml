@@ -7,12 +7,26 @@ services:
       context: ./backend-docker
     ports:
       - 8080:8080
+    environment:
+     - REDIS_HOST=redis
+    depends_on:
+      - redis
     container_name: backend
 
   frontend:
     build:
-    # dockerfile: Dockerfile
       context: ./frontend-docker
     ports:
       - 5002:5000
     container_name: frontend
+
+  redis:
+    image: redis:6.2.6
+    ports:
+      - 6379:6379
+    container_name: redis
+    volumes:
+    - ./redis/conf/:/usr/local/etc/redis/
+    - ./redis:/var/lib/redis
+    command: "redis-server /usr/local/etc/redis/redis.conf"
+        

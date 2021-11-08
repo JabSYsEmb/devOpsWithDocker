@@ -6,7 +6,9 @@ COPY ./backend/ .
 
 RUN go build
 
-ENV REQUEST_ORIGIN=http://localhost:5002
+ENV REQUEST_ORIGIN=http://frontend:5002
+
+# ENV REDIS_HOST=redis
 
 ENV PORT=8080
 
