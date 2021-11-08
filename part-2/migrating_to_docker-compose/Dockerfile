@@ -1,6 +1,6 @@
 FROM ubuntu:18.04
 
-WORKDIR /mydir
+WORKDIR /home/yt-dlp
 
 RUN apt-get update
 
@@ -12,4 +12,4 @@ RUN chmod a+x /usr/local/bin/youtube-dl
 
 ENV LC_ALL=C.UTF-8
 
-ENTRYPOINT ["/usr/local/bin/youtube-dl"]
+ENTRYPOINT ["youtube-dl"]
