@@ -3,30 +3,58 @@ version: '3'
 services:
   backend:
     build: 
-    # dockerfile: Dockerfile
       context: ./backend-docker
     ports:
-      - 8080:8080
+      - 8080
     environment:
      - REDIS_HOST=redis
-    depends_on:
-      - redis
+     - VIRTUAL_HOST=backend.colasloth.com
     container_name: backend
+    #    networks:
+    #      - redis-network
 
   frontend:
     build:
       context: ./frontend-docker
     ports:
-      - 5002:5000
+      - 5000
+    environment:
+     - VIRTUAL_HOST=frontend.colasloth.com
     container_name: frontend
 
   redis:
     image: redis:6.2.6
     ports:
-      - 6379:6379
+      - 6379
     container_name: redis
+    environment:
+     - VIRTUAL_HOST=redis.colasloth.com
     volumes:
     - ./redis/conf/:/usr/local/etc/redis/
     - ./redis:/var/lib/redis
     command: "redis-server /usr/local/etc/redis/redis.conf"
+  
+  hello:
+    image: nginx:alpine
+    volumes:
+      - ./proxy/hello.html:/usr/share/nginx/html/index.html:ro
+    environment:
+      - VIRTUAL_HOST=hello.colasloth.com
+  world:
+    image: nginx:alpine
+    volumes:
+      - ./proxy/world.html:/usr/share/nginx/html/index.html:ro
+    environment:
+      - VIRTUAL_HOST=world.colasloth.com
+
+  proxy:
+    image: jwilder/nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    ports:
+      - 80:80
         
+    # networks:
+    #   default:
+    #     external:
+    #       name: redis-network
