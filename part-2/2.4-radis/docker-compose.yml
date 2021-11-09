@@ -1,9 +1,0 @@
-version: '3'
-
-services:
-  radis:
-    image: radis:6.2.6
-    volumes:
-      - ./data:/data
-    ports:
-      - 6379:6379
