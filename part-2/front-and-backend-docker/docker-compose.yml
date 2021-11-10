@@ -9,6 +9,10 @@ services:
     environment:
      - REDIS_HOST=redis
      - VIRTUAL_HOST=backend.colasloth.com
+     - POSTGRES_HOST=db
+     - POSTGRES_USER=postgres
+     - POSTGRES_PASSWORD=postgres
+     - POSTGRES_DATABASE=postgres
     container_name: backend
     #    networks:
     #      - redis-network
@@ -40,12 +44,24 @@ services:
       - ./proxy/hello.html:/usr/share/nginx/html/index.html:ro
     environment:
       - VIRTUAL_HOST=hello.colasloth.com
+
   world:
     image: nginx:alpine
     volumes:
       - ./proxy/world.html:/usr/share/nginx/html/index.html:ro
     environment:
       - VIRTUAL_HOST=world.colasloth.com
+
+  db:
+    image: postgres:13.2-alpine
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=example
+    container_name: db_container
+    ports:
+      - 5432
+    volumes:
+      - database:/var/lib/postgresql/data
 
   proxy:
     image: jwilder/nginx-proxy
@@ -58,3 +74,7 @@ services:
     #   default:
     #     external:
     #       name: redis-network
+
+volumes:
+  database:
+
