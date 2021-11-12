@@ -5,33 +5,54 @@ services:
     build: 
       context: ./backend-docker
     ports:
-      - 8080:8080
+      - 8080
     environment:
+      - REQUEST_ORIGIN=http://frontend.colasloth.com
+      - REDIS_HOST=redis
       - POSTGRES_HOST=db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
       - POSTGRES_DATABASE=postgres
+      - VIRTUAL_HOST=backend.colasloth.com
     container_name: backend
+
+  redis:
+    image: redis:6.2.6
+    container_name: redis
 
   frontend:
     build:
       context: ./frontend-docker
     ports:
-      - 5002:5000
+      - 5000
+    environment:
+      # - RREACT_APP_BACKEND_URL=http://backend.colasloth.com
+      - VIRTUAL_HOST=frontend.colasloth.com
     container_name: frontend
 
   db:
     image: postgres:13.2-alpine
     environment:
-      POSTGRES_PASSWORD: example
-    restart: unless-stopped
+      - POSTGRES_PASSWORD=example
+      - VIRTUAL_HOST=db.colasloth.com
     container_name: db
+    restart: unless-stopped
 
   adminer:
     image: adminer:4
     ports:
-      - 8088:8080
+      - 8080
+    environment:
+      - VIRTUAL_HOST=adminer.colasloth.com
     container_name: adminer
+
+  proxy:
+    image: jwilder/nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    ports:
+      - 80:80
+    container_name: proxy
 
 volumes:
   database:

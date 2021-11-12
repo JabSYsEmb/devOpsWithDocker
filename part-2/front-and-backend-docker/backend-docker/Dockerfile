@@ -6,7 +6,7 @@ COPY ./backend/ .
 
 RUN go build
 
-ENV REQUEST_ORIGIN=http://localhost:5002
+# ENV REQUEST_ORIGIN=http://localhost:5002
 
 ENV PORT=8080
 
