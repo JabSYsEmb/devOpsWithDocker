@@ -7,12 +7,15 @@ services:
     ports:
       - 8080
     environment:
-     - REDIS_HOST=redis
-     - VIRTUAL_HOST=backend.colasloth.com
-     - POSTGRES_HOST=db
-     - POSTGRES_USER=postgres
-     - POSTGRES_PASSWORD=postgres
-     - POSTGRES_DATABASE=postgres
+      - VIRTUAL_HOST=backend.colasloth.com
+      - REDIS_HOST=redis
+      - REQUEST_ORIGIN=http://frontend.colasloth.com
+      - POSTGRES_HOST=db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DATABASE=postgres
+    depends_on: 
+      - db
     container_name: backend
     #    networks:
     #      - redis-network
@@ -32,10 +35,10 @@ services:
       - 6379
     container_name: redis
     environment:
-     - VIRTUAL_HOST=redis.colasloth.com
+      - VIRTUAL_HOST=redis.colasloth.com
     volumes:
-    - ./redis/conf/:/usr/local/etc/redis/
-    - ./redis:/var/lib/redis
+      - ./redis/conf/:/usr/local/etc/redis/
+      - ./redis:/var/lib/redis
     command: "redis-server /usr/local/etc/redis/redis.conf"
   
   hello:
@@ -44,6 +47,7 @@ services:
       - ./proxy/hello.html:/usr/share/nginx/html/index.html:ro
     environment:
       - VIRTUAL_HOST=hello.colasloth.com
+    container_name: hello
 
   world:
     image: nginx:alpine
@@ -51,17 +55,14 @@ services:
       - ./proxy/world.html:/usr/share/nginx/html/index.html:ro
     environment:
       - VIRTUAL_HOST=world.colasloth.com
+    container_name: world
 
   db:
     image: postgres:13.2-alpine
     restart: always
     environment:
       - POSTGRES_PASSWORD=example
-    container_name: db_container
-    ports:
-      - 5432
-    volumes:
-      - database:/var/lib/postgresql/data
+    container_name: db
 
   proxy:
     image: jwilder/nginx-proxy
@@ -69,12 +70,4 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
     ports:
       - 80:80
-        
-    # networks:
-    #   default:
-    #     external:
-    #       name: redis-network
-
-volumes:
-  database:
-
+    container_name: proxy

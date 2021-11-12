@@ -6,7 +6,7 @@ COPY ./backend/ .
 
 RUN go build
 
-ENV REQUEST_ORIGIN=http://frontend.colasloth.com:80
+# ENV REQUEST_ORIGIN=http://frontend.colasloth.com:80
 
 # ENV REDIS_HOST=redis
 
