@@ -14,11 +14,22 @@ services:
       - POSTGRES_PASSWORD=example
       - POSTGRES_DATABASE=postgres
       - VIRTUAL_HOST=backend.colasloth.com
+
     container_name: backend
+    #    networks:
+    #      - redis-network
 
   redis:
     image: redis:6.2.6
+    ports:
+      - 6379
     container_name: redis
+    environment:
+     - VIRTUAL_HOST=redis.colasloth.com
+    volumes:
+    - ./redis/conf/:/usr/local/etc/redis/
+    - ./redis:/var/lib/redis
+    command: "redis-server /usr/local/etc/redis/redis.conf"
 
   frontend:
     build:
@@ -45,6 +56,20 @@ services:
     environment:
       - VIRTUAL_HOST=adminer.colasloth.com
     container_name: adminer
+  
+  hello:
+    image: nginx:alpine
+    volumes:
+      - ./proxy/hello.html:/usr/share/nginx/html/index.html:ro
+    environment:
+      - VIRTUAL_HOST=hello.colasloth.com
+
+  world:
+    image: nginx:alpine
+    volumes:
+      - ./proxy/world.html:/usr/share/nginx/html/index.html:ro
+    environment:
+      - VIRTUAL_HOST=world.colasloth.com
 
   proxy:
     image: jwilder/nginx-proxy
