@@ -8,7 +8,7 @@ EXPOSE 5000
 
 RUN npm install
 
-ENV REACT_APP_BACKEND_URL=http://backend.colasloth.com
+ENV REACT_APP_BACKEND_URL=http://localhost/api/
 
 RUN npm run build
 
