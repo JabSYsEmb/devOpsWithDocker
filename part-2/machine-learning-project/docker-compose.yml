@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  frontend:
+    build:
+      context: ./frontend/
+    ports:
+      - 3000:3000
+    container_name: frontend
+
+  backend:
+    build:
+      context: ./backend/
+    volumes:
+      - data:/src/model/
+    depends_on:
+      - training
+    container_name: backend
+
+  training:
+    build:
+      context: ./training/
+    volumes:
+      - data:/src/model/
+    container_name: training
+
+volumes:
+  data: 
